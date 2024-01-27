@@ -6,6 +6,7 @@
 /docs/*/*.out
 /docs/*/*.pdf
 /docs/*/*.gz
+/data
 
 .DS_Store
 
