@@ -347,6 +347,7 @@ plt.show()
 
 # This script creates a data frame that estimates root mean sqaure error for all
 # possible combinations of predictor variables (minus reward_usd) and components
+# The dependent variable is the 20-moving average of Bitcoin
 
 import pandas as pd
 import numpy as np
@@ -427,7 +428,7 @@ print(f"Best number of components: {best_n_components}")
 print("Results saved to '/Path/RMSE.tsv'")
 
 ########### Comparison of RMSE for Each Component using all Predictors #############
-###############################################################
+#################################################################################
 
 # This script calculates the RMSE up to 8 components using all predictors
 #except for rewards_usd
@@ -548,7 +549,7 @@ plt.title('Variance Explained in Y by PLS Components')
 plt.grid(True)
 plt.show()
 
-############## Partial Least Sqaures of Moving BTC (USD) ######################################
+######## Partial Least Sqaures of Moving Average BTC (USD) ############
 ######################################################################
 
 import pandas as pd
