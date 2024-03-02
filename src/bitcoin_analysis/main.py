@@ -2,8 +2,9 @@
 ############# BTC Value (USD) vs. Day with Moving Average ###########
 #####################################################################
 
-#script to graph the closing price of Bitcoin pre day with moving average
+# Script to graph the closing price of Bitcoin per day with moving average
 # Bitcoin data was retrieved from Yahoo finance from dates 11-11-19 to 11-09-20
+# File was convered to tsv file and named BTC-USD.tsv
 
 import pandas as pd
 import matplotlib.pyplot as plt
