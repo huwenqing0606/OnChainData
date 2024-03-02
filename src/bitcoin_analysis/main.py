@@ -1,5 +1,5 @@
 
-'''###################### BTC Value (USD) vs. day ###################
+###################### BTC Value (USD) vs. day ###################
 #####################################################################
 
 #script to graph the closing price of Bitcoin pre day with moving average
