@@ -1,3 +1,49 @@
+
+'''###################### BTC Value (USD) vs. day ###################
+#####################################################################
+
+#script to graph the closing price of Bitcoin pre day with moving average
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+
+Bitcoin_Value = pd.read_csv('/Users/pauloconnor/Desktop/py.scripts/Bitcoin tsv/BTC-USD_Combined.tsv', sep='\t')
+
+df = pd.DataFrame(Bitcoin_Value)
+
+# Convert 'date' to datetime format
+df['Date'] = pd.to_datetime(df['Date'])
+
+# Ensure the DataFrame is sorted by date
+df.sort_values('Date', inplace=True)
+
+# Calculate the 20-day moving average of 'Adj Close'
+df['Moving Avg BTC USD'] = df['Adj Close'].rolling(window=20).mean()
+
+# Create the plot
+plt.figure(figsize=(12, 6))
+plt.plot(df['Date'], df['Adj Close'], label='Bitcoin Value (USD)', color='lightblue')
+plt.plot(df['Date'], df['Moving Avg BTC USD'], label='20-Day Moving Average', color='orange', linestyle='-')
+
+# Formatting the plot
+plt.title('BTC Value (USD) vs. Time')
+plt.xlabel('Date')
+plt.ylabel('BTC Value (USD)')
+plt.legend()
+
+# Format the x-axis to display dates clearly
+plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+plt.gca().xaxis.set_major_locator(mdates.MonthLocator())  # Adjust for desired tick frequency
+plt.gcf().autofmt_xdate()  # Rotate date labels for better readability
+
+# Add a red vertical line at May 11, 2020
+plt.axvline(pd.Timestamp('2020-05-11'), color='red', alpha=0.3, linestyle='-', lw=2)
+
+# Show the plot
+plt.show()
+
+
 ##Script to generate Graphs of Summed Variables per Day with 20-day moving average #######
 ######################################################################################
 
