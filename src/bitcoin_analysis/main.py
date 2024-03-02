@@ -3,12 +3,13 @@
 #####################################################################
 
 #script to graph the closing price of Bitcoin pre day with moving average
+# Bitcoin data was retrieved from Yahoo finance from dates 11-11-19 to 11-09-20
 
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
-Bitcoin_Value = pd.read_csv('/Users/pauloconnor/Desktop/py.scripts/Bitcoin tsv/BTC-USD_Combined.tsv', sep='\t')
+Bitcoin_Value = pd.read_csv('/Path/BTC-USD.tsv', sep='\t')
 
 df = pd.DataFrame(Bitcoin_Value)
 
