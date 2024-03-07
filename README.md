@@ -5,14 +5,38 @@ analysis of blockchain data
 based on https://github.com/blockchain-etl
 
 ## Use Virtual Environment
-First time use. 
+For first time use. 
 
-Setup venv:
 ```
-. script/venv.sh
+. script/initialize.sh
 ```
 
-Install requirement packages:
+After first time use
 ```
-. script/init.sh
+. venv/bin/activate
 ```
+
+## Fetch Data
+
+Fetch Bitcoin
+```
+python3 -m script.fetch_bitcoin
+```
+
+Fetch ETH
+```
+python3 -m script.fetch_ETH
+```
+
+## Analyze Data
+
+Analyze Bitcoin
+```
+python3 -m src.bitcoin_analysis.main
+```
+
+Analyze ETH
+```
+TODO
+```
+
