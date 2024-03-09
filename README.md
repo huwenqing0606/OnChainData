@@ -20,19 +20,19 @@ After first time use
 
 Fetch Bitcoin
 ```
-python3 -m script.fetch_bitcoin
+python -m script.fetch_bitcoin
 ```
 
 Fetch ETH
 ```
-python3 -m script.fetch_ETH
+python -m script.fetch_ETH
 ```
 
 ## Analyze Data
 
 Analyze Bitcoin
 ```
-python3 -m src.bitcoin_analysis.main
+python -m src.bitcoin_analysis.main
 ```
 
 Analyze ETH
