@@ -685,8 +685,9 @@ import pandas as pd
 from sklearn.cross_decomposition import PLSRegression
 from sklearn.model_selection import train_test_split, cross_val_predict, KFold
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import numpy as np
+import matplotlib.pyplot as plt
 
 # Load your dataset
 df = pd.read_csv('/Users/pauloconnor/Desktop/py.scripts/Bitcoin tsv/BTC-USD_2.2.tsv', sep='\t')
@@ -730,3 +731,37 @@ cv_r2 = r2_score(y, y_cv_pred)
 print(f'Cross-validated RMSE: {cv_rmse:.2f}')
 print(f'Cross-validated MAE: {cv_mae:.2f}')
 print(f'Cross-validated R-squared: {cv_r2:.2f}')
+
+# Plot PLS Regression vs BTC Price 
+
+y_pred = pls.predict(X_scaled)
+
+# Plot actual vs. predicted values
+plt.figure(figsize=(10, 6))
+plt.plot(df.index, y, label='Actual Moving Average BTC USD', color='lightblue', linewidth=2)
+plt.plot(df.index, y_pred, label='PLS Predicted Moving Average USD', color='salmon', linestyle='-', linewidth=2)
+
+plt.xlabel('Index')
+plt.ylabel('Moving Average BTC USD')
+plt.title('Actual vs. Predicted Moving Average BTC USD')
+plt.legend()
+plt.show()
+
+# Plot of PLS Regression Linear Equation vs Actual Data
+
+y_pred_flattened = y_pred.flatten()
+
+# Create the scatter plot
+plt.figure(figsize=(10, 6))
+plt.scatter(y, y_pred_flattened, color='lightblue', edgecolor='k', alpha=0.6)
+
+# Plot a line for perfect predictions to guide the eye
+plt.plot([y.min(), y.max()], [y.min(), y.max()], color='salmon', linestyle='-', linewidth=2)
+
+# Labeling the plot
+plt.xlabel('Actual Moving Average BTC USD')
+plt.ylabel('PLS Predicted Moving Average BTC USD')
+plt.title('Scatter Plot of Actual vs. PLS Predicted Moving Average BTC USD')
+
+# Show the plot
+plt.show()
