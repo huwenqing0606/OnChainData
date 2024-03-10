@@ -7,10 +7,17 @@
 # File was convered to tsv file and named BTC-USD.tsv
 
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+import seaborn as sns
+from sklearn.model_selection import cross_val_score, KFold, train_test_split
+from sklearn.cross_decomposition import PLSRegression
+from sklearn.preprocessing import StandardScaler, r2_score
+from sklearn.metrics import make_scorer, mean_squared_error, mean_absolute_error, r2_score
+from itertools import combinations
 
-Bitcoin_Value = pd.read_csv('/Path/BTC-USD.tsv', sep='\t')
+Bitcoin_Value = pd.read_csv('/Data/BTC-USD.tsv', sep='\t')
 
 df = pd.DataFrame(Bitcoin_Value)
 
@@ -55,10 +62,6 @@ plt.show()
 #fee_total_usd
 #For all blocks verified within one day (11-11-2019 to 11-09-2019), the variable is summed and grouped by date.
 
-import pandas as pd
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-
 # Function to load data, process, and plot with moving average
 def plot_with_moving_avg(file_path, metric, agg_func='sum', window_size=20, plot_title='', y_label=''):
     # Load data
@@ -87,7 +90,7 @@ def plot_with_moving_avg(file_path, metric, agg_func='sum', window_size=20, plot
     plt.show()
 
 # File path
-file_path = '/Path/Bitcoin_Combined_20191111_20201109.tsv'
+file_path = '/Data/Bitcoin_Combined_20191111_20201109.tsv'
 
 # Plotting different metrics
 plot_with_moving_avg(file_path, 'reward_usd', agg_func='sum', plot_title='Daily Summation of Rewards vs. Time', y_label='Rewards (USD)')
@@ -104,10 +107,6 @@ plot_with_moving_avg(file_path, 'fee_total_usd', agg_func='sum', plot_title='Tot
 #fee_total_usd
 #For all blocks verified within one day (11-11-2019 to 11-09-2019), the variable is averaged by dividing the 
 #number of blocks verified on that day.
-
-import pandas as pd
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
 
 def plot_metric(file_path, metric_name, agg_func='mean', window_size=20, plot_title='', y_label=''):
     # Load data and preprocess
@@ -138,7 +137,7 @@ def plot_metric(file_path, metric_name, agg_func='mean', window_size=20, plot_ti
     plt.show()
 
 # Define the file path
-file_path = '/Path/Bitcoin_Combined_20191111_20201109.tsv'
+file_path = '/Data/Bitcoin_Combined_20191111_20201109.tsv'
 
 # Plotting different metrics using the function
 plot_metric(file_path, 'reward_usd', 'mean', 20, 'Average Daily Rewards vs. Time', 'Rewards (USD)')
@@ -155,10 +154,6 @@ plot_metric(file_path, 'fee_total_usd', 'mean', 20, 'Average Daily Fee vs. Time'
 #fee_total_usd
 #For all blocks verified within one day (11-11-2019 to 11-09-2019), the variable is summed by date and dividing by
 #the number of transactions on that day, hence averaged variable per transaction.
-
-import pandas as pd
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
 
 def plot_metric_with_moving_avg(dataframe, metric_name, color, label, window_size=20):
     # Group by 'date' and calculate the sum of the metric and 'transaction_count', then compute the average per transaction
@@ -190,7 +185,7 @@ def plot_metric_with_moving_avg(dataframe, metric_name, color, label, window_siz
     plt.show()
 
 # Load your data
-Bitcoin_Blocks = pd.read_csv('/Path/Bitcoin_Combined_20191111_20201109.tsv', sep='\t')
+Bitcoin_Blocks = pd.read_csv('/Data/Bitcoin_Combined_20191111_20201109.tsv', sep='\t')
 Bitcoin_Blocks['time'] = pd.to_datetime(Bitcoin_Blocks['time'])
 Bitcoin_Blocks['date'] = Bitcoin_Blocks['time'].dt.date
 
@@ -206,10 +201,8 @@ plot_metric_with_moving_avg(Bitcoin_Blocks, 'fee_total_usd', 'lightblue', 'Avera
 # BTC-USD Dataframe was obtained form Yahoo Finance to accuire closing price 
 # of Bitcoin for each day (11-11-19 to 11-09-20)
 
-import pandas as pd
-
 # Load the Bitcoin Blocks data
-Bitcoin_Blocks = pd.read_csv('/Path/Bitcoin_Combined_20191111_20201109.tsv', sep='\t')
+Bitcoin_Blocks = pd.read_csv('/Data/Bitcoin_Combined_20191111_20201109.tsv', sep='\t')
 Bitcoin_Blocks['time'] = pd.to_datetime(Bitcoin_Blocks['time'])
 Bitcoin_Blocks['date'] = Bitcoin_Blocks['time'].dt.date
 
@@ -235,7 +228,7 @@ for column in grouped.columns:
 grouped.reset_index(inplace=True)
 
 # Load the BTC-USD data
-btc_usd = pd.read_csv('/Path/BTC-USD.tsv', sep='\t', parse_dates=['Date'])
+btc_usd = pd.read_csv('/Data/BTC-USD.tsv', sep='\t', parse_dates=['Date'])
 btc_usd['date'] = btc_usd['Date'].dt.date
 
 # Merge the BTC-USD data with the calculated metrics based on the 'date' column
@@ -253,44 +246,36 @@ final_data.to_csv('/Users/pauloconnor/Desktop/py.scripts/Bitcoin tsv/BTC-USD_2.1
 ############ Add 20-day Moving Average of Bitcoin Value to BTC-USD Data Frame #####
 ############################################################################
 
-import pandas as pd
-
 # Load the BTC-USD combined data
-btc_usd_combined = pd.read_csv('/Path/BTC-USD_2.1.tsv', sep='\t', parse_dates=['Date'])
+btc_usd_combined = pd.read_csv('/Data/BTC-USD_2.1.tsv', sep='\t', parse_dates=['Date'])
 btc_usd_combined['date'] = btc_usd_combined['Date'].dt.date
 
 # Calculate the 20-day moving average of 'Adj Close'
 btc_usd_combined['moving_avg_BTC USD'] = btc_usd_combined['Adj Close'].rolling(window=20).mean()
 
 # Save the updated DataFrame back to a TSV file
-btc_usd_combined.to_csv('/Path/BTC-USD_2.2.tsv', sep='\t', index=False)
+btc_usd_combined.to_csv('/Data/BTC-USD_2.2.tsv', sep='\t', index=False)
 
 ########### Remove moving_avg_transaction_count_per_transaction#####
 ####################################################################
 
 #This is meaningless vector as it always equate to 1, therefore it was removed from the data frame
 
-import pandas as pd
-
 # Load your DataFrame
-df = pd.read_csv('/Path/BTC-USD_2.2.tsv', sep='\t')
+df = pd.read_csv('/Data/BTC-USD_2.2.tsv', sep='\t')
 
 # Remove the 'moving_avg_transaction_count_per_transaction' column
 df = df.drop(columns=['moving_avg_transaction_count_per_transaction'])
 
 # Save the updated DataFrame back to a TSV file
-df.to_csv('/Path/BTC-USD_2.2.tsv', sep='\t', index=False)
+df.to_csv('/Data/BTC-USD_2.2.tsv', sep='\t', index=False)
 
 
 ##################### Correlation Matrix of Moving Average #########
 ####################################################################
 
-import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
-
 # Load your dataset
-df = pd.read_csv('/Path/BTC-USD_2.2.tsv', sep='\t')
+df = pd.read_csv('/Data/BTC-USD_2.2.tsv', sep='\t')
 
 # Filter columns that contain 'moving_avg' in their names to focus on moving averages
 moving_avg_columns = [col for col in df.columns if 'moving_avg' in col]
@@ -341,12 +326,8 @@ plt.show()
 ##################### Correlation Matrix of Block Values ###################
 ############################################################################
 
-import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
-
 # Load your dataset
-df = pd.read_csv('/Path/BTC-USD_2.2.tsv', sep='\t')
+df = pd.read_csv('/Data/BTC-USD_2.2.tsv', sep='\t')
 
 # Define the columns to be used in the correlation matrix and their intended titles
 columns_with_custom_titles = {
@@ -397,14 +378,6 @@ plt.show()
 # possible combinations of predictor variables (minus reward_usd) and components
 # The dependent variable is the 20-moving average of Bitcoin
 
-import pandas as pd
-import numpy as np
-from sklearn.model_selection import cross_val_score, KFold
-from sklearn.cross_decomposition import PLSRegression
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import make_scorer, mean_squared_error
-from itertools import combinations
-
 # Function to calculate RMSE
 def rmse(y_true, y_pred):
     return np.sqrt(mean_squared_error(y_true, y_pred))
@@ -413,7 +386,7 @@ def rmse(y_true, y_pred):
 rmse_scorer = make_scorer(rmse, greater_is_better=False)
 
 # Load your dataset
-df = pd.read_csv('/Path/BTC-USD_2.2.tsv', sep='\t')  # Update the path accordingly
+df = pd.read_csv('/Data/BTC-USD_2.2.tsv', sep='\t')  # Update the path accordingly
 
 # Exclude the first 19 rows
 df = df.iloc[19:]
@@ -467,26 +440,19 @@ for r in range(1, len(columns) + 1):
 
 # Convert the final results to a DataFrame for display and save
 final_results_df = pd.DataFrame(final_results)
-#final_results_df.to_csv('/Path/RMSE.tsv', sep='\t', index=False)  # Update the path accordingly
+#final_results_df.to_csv('/Data/RMSE.tsv', sep='\t', index=False)  # Update the path accordingly
 
 # Print the best configuration
 print(f"Best RMSE: {min_rmse}")
 print(f"Best combination of predictors: {best_combination}")
 print(f"Best number of components: {best_n_components}")
-print("Results saved to '/Path/RMSE.tsv'")
+print("Results saved to '/Data/RMSE.tsv'")
 
 ########### Comparison of RMSE for Each Component using all Predictors #############
 #################################################################################
 
 # This script calculates the RMSE up to 8 components using all predictors
 #except for rewards_usd
-
-import pandas as pd
-import numpy as np
-from sklearn.model_selection import cross_val_score, KFold
-from sklearn.cross_decomposition import PLSRegression
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import make_scorer, mean_squared_error
 
 # Function to calculate RMSE
 def rmse(y_true, y_pred):
@@ -496,7 +462,7 @@ def rmse(y_true, y_pred):
 rmse_scorer = make_scorer(rmse, greater_is_better=False)
 
 # Load your dataset
-df = pd.read_csv('/Path/BTC-USD_2.2.tsv', sep='\t')  # Update the path accordingly
+df = pd.read_csv('/Data/BTC-USD_2.2.tsv', sep='\t')  # Update the path accordingly
 
 # Exclude the first 19 rows
 df = df.iloc[19:]
@@ -546,15 +512,8 @@ print(results_df)
 # the number of components to use, helping to select the optimal 
 # number of components to use
 
-import matplotlib.pyplot as plt
-from sklearn.cross_decomposition import PLSRegression
-from sklearn.metrics import r2_score
-from sklearn.preprocessing import StandardScaler
-import pandas as pd
-import numpy as np
-
 # Load dataset
-df = pd.read_csv('/Path/BTC-USD_2.2.tsv', sep='\t')
+df = pd.read_csv('/Data/BTC-USD_2.2.tsv', sep='\t')
 
 # Exclude the first 19 rows to account for the moving average calculation starting from the 20th data point
 df = df.iloc[19:]
@@ -600,15 +559,8 @@ plt.show()
 ######## Partial Least Sqaures of Moving Average BTC (USD) ############
 ######################################################################
 
-import pandas as pd
-from sklearn.cross_decomposition import PLSRegression
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-import numpy as np
-
 # Load dataset
-df = pd.read_csv('/Path/BTC-USD_2.2.tsv', sep='\t')
+df = pd.read_csv('/Data/BTC-USD_2.2.tsv', sep='\t')
 
 # Exclude the first 19 rows to account for the moving average calculation starting from the 20th data point
 df = df.iloc[19:]
@@ -681,13 +633,6 @@ print(f"Coefficient of Determination (R²): {r2_score(y_test, y_pred_test):.2f}"
 
 #K-fold cross validation to test predictive capacity of the final PLS model
 
-import pandas as pd
-from sklearn.cross_decomposition import PLSRegression
-from sklearn.model_selection import train_test_split, cross_val_predict, KFold
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import mean_squared_error
-import numpy as np
-
 # Load your dataset
 df = pd.read_csv('/Users/pauloconnor/Desktop/py.scripts/Bitcoin tsv/BTC-USD_2.2.tsv', sep='\t')
 
@@ -713,6 +658,31 @@ X_scaled = scaler.fit_transform(X)
 # Define the PLS model
 pls = PLSRegression(n_components=7)
 
+# Fit the PLS model
+pls.fit(X_scaled, y)
+
+# Extract coefficients and construct the linear equation
+coefficients = pls.coef_.flatten()
+equation_terms = [f"({coef:.3f} * {name})" for coef, name in zip(coefficients, columns)]
+equation = " + ".join(equation_terms)
+print("Linear Equation:")
+print(f"y = {equation}")
+
+################# Evaluation of Error ####################
+#########################################################
+
+# Number of components used in the PLS model
+n_components = pls.n_components
+
+# Display weights for each component
+for i in range(n_components):
+    component_weights = pls.x_weights_[:, i]
+    print(f"Weights for component {i+1}: {component_weights}")
+
+    # Constructing a string for each component's weights for better readability
+    weight_str = " + ".join([f"{weight:.3f}*X{index+1}" for index, weight in enumerate(component_weights)])
+    print(f"Component {i+1}: {weight_str}\n")
+
 # Perform K-Fold cross-validation
 kf = KFold(n_splits=5, shuffle=True, random_state=42)
 y_cv_pred = cross_val_predict(pls, X_scaled, y, cv=kf)
@@ -730,3 +700,39 @@ cv_r2 = r2_score(y, y_cv_pred)
 print(f'Cross-validated RMSE: {cv_rmse:.2f}')
 print(f'Cross-validated MAE: {cv_mae:.2f}')
 print(f'Cross-validated R-squared: {cv_r2:.2f}')
+
+################### Plot PLS Regression vs BTC Price #################
+####################################################################
+
+y_pred = pls.predict(X_scaled)
+
+# Plot actual vs. predicted values
+plt.figure(figsize=(10, 6))
+plt.plot(df.index, y, label='Actual Moving Average BTC USD', color='lightblue', linewidth=2)
+plt.plot(df.index, y_pred, label='PLS Predicted Moving Average USD', color='salmon', linestyle='-', linewidth=2)
+
+plt.xlabel('Index')
+plt.ylabel('Moving Average BTC USD')
+plt.title('Actual vs. Predicted Moving Average BTC USD')
+plt.legend()
+plt.show()
+
+######## Plot of PLS Regression Linear Equation #####################
+####################################################################
+
+y_pred_flattened = y_pred.flatten()
+
+# Create the scatter plot
+plt.figure(figsize=(10, 6))
+plt.scatter(y, y_pred_flattened, color='lightblue', edgecolor='k', alpha=0.6)
+
+# Plot a line for perfect predictions to guide the eye
+plt.plot([y.min(), y.max()], [y.min(), y.max()], color='salmon', linestyle='-', linewidth=2)
+
+# Labeling the plot
+plt.xlabel('Actual Moving Average BTC USD')
+plt.ylabel('PLS Predicted Moving Average BTC USD')
+plt.title('Scatter Plot of Actual vs. PLS Predicted Moving Average BTC USD')
+
+# Show the plot
+plt.show()
