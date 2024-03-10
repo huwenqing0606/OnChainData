@@ -13,7 +13,7 @@ import matplotlib.dates as mdates
 import seaborn as sns
 from sklearn.model_selection import cross_val_score, KFold, train_test_split
 from sklearn.cross_decomposition import PLSRegression
-from sklearn.preprocessing import StandardScaler, r2_score
+from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import make_scorer, mean_squared_error, mean_absolute_error, r2_score
 from itertools import combinations
 
