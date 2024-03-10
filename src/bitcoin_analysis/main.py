@@ -722,11 +722,11 @@ plt.show()
 
 y_pred_flattened = y_pred.flatten()
 
-# Create the scatter plot
+# Create scatter plot
 plt.figure(figsize=(10, 6))
 plt.scatter(y, y_pred_flattened, color='lightblue', edgecolor='k', alpha=0.6)
 
-# Plot a line for perfect predictions to guide the eye
+# Plot a line 
 plt.plot([y.min(), y.max()], [y.min(), y.max()], color='salmon', linestyle='-', linewidth=2)
 
 # Labeling the plot
