@@ -2,4 +2,7 @@ python-dateutil==2.7.3
 click==7.0
 pandas==1.1.5
 numpy==1.26.4
+request==2.20.0
+datetime== No version
 tdqm==4.66.2
+
